@@ -8,6 +8,7 @@ trigger DealTrigger on Deal__c (before insert,before update ,after insert) {
             }
 	   }
     }
+	//Todo
 	if(trigger.isBefore){
         if (trigger.isInsert) {
         	Set<Datetime> startDate = new Set<Datetime>();
