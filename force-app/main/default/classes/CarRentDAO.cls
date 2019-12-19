@@ -33,7 +33,6 @@ public with sharing class CarRentDAO {
       }      
     
     public List<Car__c> getCarsAvailableForRent(Date rentStart, Date rentEnd){
-        // todo Inner query  
         List<Car__c> cars = [
             SELECT Id, Name,
                 (SELECT Id, StartDate__c, EndDate__c 
@@ -43,14 +42,7 @@ public with sharing class CarRentDAO {
                 AND Status__c='Open')
             FROM Car__c
         ];
-     // List<Deal__c> deals =[SELECT Id , StartDate__c, EndDate__c, Car__r.Id,Car_r.Name FROM Deal__c 
-       //                       WHERE StartDate__c = : rentStart AND EndDate__c = : rentEnd AND Status__c='Open'];
-      //  Set<Id> carsIds = new Set<Id>();
-      //    for(Deal__c deal :deals){
-      //        //redo
-      //        carsIds.add(deal.Car__c);
-      //    }
-      //  List<Car__c> cars = [SELECT Id,Name from Car__c where Id in: carsIds];
+ 
        return cars;
       
     }

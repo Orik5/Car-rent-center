@@ -9,19 +9,19 @@ public with sharing class CarRentServices {
             deal.EndDate__c = Datetime.now();
           }
     }
-    //done
+    
     public List<Deal__c> filterFinished(List<Deal__c> deals){
       List<Deal__c> deals1 = [SELECT id,Name,Status__c FROM Deal__c];
       for (Deal__c deal :deals1){
           if(deal.Status__c != 'Lost'){
               deal.EndDate__c = Datetime.now();
-               //setEndDate(deals1);
+           
              }
           }
-          //update deals;
+         
         return deals;
     }
-    //redo
+    
     public Sales_Manager__c createSalesManager(String name, String email){
         Sales_Manager__c  salesManager = new Sales_Manager__c (Name = name, Email__c = email);
         Database.SaveResult sr = Database.insert(salesManager);
@@ -59,10 +59,7 @@ public with sharing class CarRentServices {
     public  Car__c updateDeal(Id dealId, Map<SObjectField, Object> fieldName2Value){
         List<Deal__c> deals = [SELECT Car__c,Car__r.Name,Car__r.IsValidForRent__c,Car__r.Model__c,Car__r.Type__c
                              FROM Deal__c WHERE ID =: dealId ];
-     // if(!deals.isEmpty()){
-     //   Deal__c deal = deals.get(0);
-     //  deal.Car__r.Name;
-     // }
+  
         Set<Id> carSetIds = new Set<Id>();
         for(Deal__c carId: deals){
             carSetIds.add(carId.Car__c);
