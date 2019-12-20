@@ -32,7 +32,7 @@ public with sharing class CarRentDAO {
         return salesRepDealStatusesCount;
       }      
     
-    public List<Car__c> getCarsAvailableForRent(Date rentStart, Date rentEnd){
+    public List<Car__c> getCarsAvailableForRent(Datetime rentStart, Datetime rentEnd){
         List<Car__c> cars = [
             SELECT Id, Name,
                 (SELECT Id, StartDate__c, EndDate__c 
@@ -58,8 +58,7 @@ public with sharing class CarRentDAO {
         ];
         for(AggregateResult agg : carWonStatusesCountAggr){
             carWonStatusesCount.put((Id)agg.get('Car__c'), (Integer) (agg.get('recordCount')));
-           } 
-        System.debug(carWonStatusesCount);
+           }        
         return carWonStatusesCount;        
     }
     
@@ -82,9 +81,7 @@ public with sharing class CarRentDAO {
               salesIds.add((Id)agg.get('Sales_Manager__c'));
            } 
          if(salesIds.size() > 0){
-           salesMan.Id = salesIds.get(0);
-           System.debug(salesMan);
-            
+           salesMan.Id = salesIds.get(0);                    
         }
         return salesMan;
     }

@@ -3,6 +3,12 @@ public with sharing class CarRentServices {
     public CarRentServices() {
 
     }
+  
+    public Date dateTimeToDateConverter(Datetime inputDatetime){
+        String stringDate = String.valueOf(inputDatetime.Date());
+        Date outputDate = Date.valueOf(stringDate);
+        return outputDate;
+      }
 
     public static void setEndDate(List<Deal__c> endDateDeals){
         for(Deal__c deal :endDateDeals){
@@ -22,8 +28,8 @@ public with sharing class CarRentServices {
         return deals;
     }
     
-    public Sales_Manager__c createSalesManager(String name, String email){
-        Sales_Manager__c  salesManager = new Sales_Manager__c (Name = name, Email__c = email);
+    public Sales_Manager__c createSalesManager(String name, Date birthday){
+        Sales_Manager__c  salesManager = new Sales_Manager__c (Name = name, BirthDate__c = birthday);
         Database.SaveResult sr = Database.insert(salesManager);
        
         if (sr.isSuccess()) {
@@ -137,4 +143,15 @@ public with sharing class CarRentServices {
         }
         return car.Id;
    } 
+       
+    public static void checkDealDatetime(Deal__c deal,Deal__c newDeal ){
+        if((newDeal.Status__c=='Won' && deal.Status__c=='Won') || (newDeal.Status__c=='Open' && deal.Status__c=='Won')){
+            if((newDeal.EndDate__c <= deal.StartDate__c && newDeal.EndDate__c >= deal.EndDate__c) ||
+                (newDeal.StartDate__c <= deal.StartDate__c && newDeal.EndDate__c >= deal.EndDate__c) ||
+                (newDeal.StartDate__c <= deal.StartDate__c && newDeal.StartDate__c >= deal.EndDate__c) ||
+                (newDeal.StartDate__c > deal.EndDate__c && newDeal.EndDate__c < deal.EndDate__c )) {
+                 newDeal.addError('Please choose another datetime for deal, in this period already exist deal.You can\'t create two deals on the same period!');
+           	}
+        }
+    }
 }
