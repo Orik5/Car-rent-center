@@ -1,14 +1,12 @@
 trigger DealTrigger on Deal__c (before insert,before update ,after insert) {
     if(trigger.isBefore){
     	if(trigger.isUpdate){
+			List<Deal__c> deals = new List<Deal__c>();
 			for(Deal__c deal:Trigger.new ){
-            	if(deal.Status__c != 'Lost'){
-                	deal.EndDate__c = Datetime.now();
-                }
+				CarRentServices.changeDatetimeToNow(deal);
             }
 	   }
     }
-
 
 	if(trigger.isBefore){
 		if(trigger.isUpdate){

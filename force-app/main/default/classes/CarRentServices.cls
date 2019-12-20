@@ -19,12 +19,10 @@ public with sharing class CarRentServices {
     public List<Deal__c> filterFinished(List<Deal__c> deals){
       List<Deal__c> deals1 = [SELECT id,Name,Status__c FROM Deal__c];
       for (Deal__c deal :deals1){
-          if(deal.Status__c != 'Lost'){
-              deal.EndDate__c = Datetime.now();
-           
-             }
+          if(deal.Status__c != 'Open'){
+              setEndDate(deals);
+            }
           }
-         
         return deals;
     }
     
@@ -145,13 +143,19 @@ public with sharing class CarRentServices {
    } 
        
     public static void checkDealDatetime(Deal__c deal,Deal__c newDeal ){
+        String errorMessage = 'Please choose another datetime for deal, in this period already exist deal.You can\'t create two deals on the same period!';
         if((newDeal.Status__c=='Won' && deal.Status__c=='Won') || (newDeal.Status__c=='Open' && deal.Status__c=='Won')){
             if((newDeal.EndDate__c <= deal.StartDate__c && newDeal.EndDate__c >= deal.EndDate__c) ||
                 (newDeal.StartDate__c <= deal.StartDate__c && newDeal.EndDate__c >= deal.EndDate__c) ||
                 (newDeal.StartDate__c <= deal.StartDate__c && newDeal.StartDate__c >= deal.EndDate__c) ||
                 (newDeal.StartDate__c > deal.EndDate__c && newDeal.EndDate__c < deal.EndDate__c )) {
-                 newDeal.addError('Please choose another datetime for deal, in this period already exist deal.You can\'t create two deals on the same period!');
+                 newDeal.addError(errorMessage);
            	}
+        }
+    }
+    public static void changeDatetimeToNow(Deal__c deal){
+        if(deal.Status__c != 'Open'){
+            deal.EndDate__c = Datetime.now();
         }
     }
 }
