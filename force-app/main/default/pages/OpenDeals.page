@@ -1,26 +1,15 @@
-    <apex:page  standardController="Deal__c" extensions="SalesManagerController" recordSetVar="Deals__c" >
-    <!-- Begin Default Content REMOVE THIS -->
-
-
+<apex:page  standardController="Deal__c" extensions="SalesManagerController"  >
     <apex:form >
-        <apex:pageBlock title="Deals" id="deals_list">
-  
-<!-- End Default Content REMOVE THIS -->
-    Filter:
-    <apex:selectList value="{! filterId }" size="1">
-        <apex:selectOptions value="{! listViewOptions }"/>
-        <apex:actionSupport event="onchange" reRender="deals_list"/>
-    </apex:selectList>
-<!-- Deal List -->
-    <apex:pageBlockTable value="{! Deals__c }" var="ct">
-        <apex:column value="{! ct.Name }"/>
-        <apex:column value="{! ct.Status__c }"/>
-        <apex:column value="{! ct.StartDate__c}"/>
-        <apex:column value="{! ct.EndDate__c}"/>
-        <apex:column value="{! ct.Car__c }"/>
-        <apex:column value="{! ct.Sales_Manager__c}"/>
-
-</apex:pageBlockTable>
-</apex:pageBlock>
+       <apex:pageBlock title="Deals" >
+        <apex:commandButton value="Show Deals" action="{!getDeals}" reRender="y" />
+         <apex:pageBlockTable value="{!dealsList}" var="deal" id="y">
+            <apex:column value="{!deal.Name}"/>
+            <apex:column value="{! deal.Status__c }"/>
+            <apex:column value="{! deal.StartDate__c}"/>
+            <apex:column value="{! deal.EndDate__c}"/>
+            <apex:column value="{! deal.Car__c }"/>
+            <apex:column value="{! deal.Sales_Manager__c}"/>
+    </apex:pageBlockTable>
+</apex:pageBlock>   
 </apex:form>
 </apex:page>
