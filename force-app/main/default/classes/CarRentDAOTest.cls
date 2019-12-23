@@ -10,18 +10,18 @@ private class CarRentDAOTest {
         Car__c car = new Car__c(); 
         car.Name='TestCar';
         car.IsValidForRent__c= true;
-        insert car;
+        insert car;             
         Deal__c deal = new Deal__c();
         deal.Name = 'TestDeal';
         deal.StartDate__c = datetime.newInstance(2019, 12, 21, 12, 30, 0);
         deal.EndDate__c = datetime.newInstance(2019, 12, 22, 13, 30, 0);
         deal.Status__c ='Open';
         deal.Car__c=car.Id;
-        deal.Sales_Manager__c=sales.Id;       
-        insert deal;  
+        deal.Sales_Manager__c=sales.Id;    
+        insert deal;
         deal.Status__c ='Won';
         update deal;
-      
+          
 
     }
     @isTest
@@ -87,5 +87,6 @@ private class CarRentDAOTest {
        carRentDAO.getTopRatedSalesRepOfYear(year);
        System.Test.stopTest();
     }
+   
 
 }
