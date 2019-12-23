@@ -9,6 +9,28 @@
             <apex:column value="{! deal.EndDate__c}"/>
             <apex:column value="{! deal.Car__c }"/>
             <apex:column value="{! deal.Sales_Manager__c}"/>
+            <apex:column  >            
+                <apex:pageBlock >
+                    <apex:pageBlockTable onclick="{!deal.Car__r}" value="{!deal.Car__r}" var="car">
+                        <apex:column value="{! car.Id}"/>
+                        <apex:column value="{! car.Name}"/>
+                        <apex:column value="{! car.IsValidForRent__c}"/>
+                        <apex:column value="{! car.Model__c}"/>
+                        <apex:column value="{! car.Photo__c}"/>
+                        <apex:column value="{! car.Type__c}"/>
+                     </apex:pageBlockTable>
+                </apex:pageBlock>
+            </apex:column>
+            <apex:column  >            
+                <apex:pageBlock >
+                    <apex:pageBlockTable onclick="{!deal.Sales_Manager__r}" value="{!deal.Sales_Manager__r}" var="sales">
+                        <apex:column value="{! sales.Id}"/>
+                        <apex:column value="{! sales.Name}"/>
+                        <apex:column value="{! sales.Email__c}"/>
+                        <apex:column value="{! sales.BirthDate__c}"/>
+                     </apex:pageBlockTable>
+                </apex:pageBlock>
+            </apex:column>
     </apex:pageBlockTable>
 </apex:pageBlock>   
 </apex:form>
