@@ -1,5 +1,30 @@
-<apex:page  standardController="Deal__c" extensions="SalesManagerController"  >
+<apex:page  docType="html-5.0" standardController="Deal__c" extensions="SalesManagerController"  >
     <apex:form >
+
+<apex:pageBlock title="Car Rent Statistic">
+    <apex:actionFunction name="Car Rent Statistic" action="{!getCarRentStatistic}" />
+    <apex:commandButton value="Car Rent Statistic" action="{!getCarRentStatistic}" />
+   
+</apex:pageBlock>
+
+
+    <apex:pageBlock title="Choose start and end datetime">
+    <input id="theStartDatetimeInput" type="datetime" name="theStartDatetimeInput"/>
+    <input id="theEndDatetimeInput" type="datetime" name="theEndDatetimeInput"/>
+    <apex:input value="{!startDate}" id="theStartDatetimeInput"/>
+    <apex:input value="{!endDate}" id="theEndDatetimeInput"/>
+   
+    </apex:pageBlock >
+        <apex:pageBlock title="Insert year">
+            <input id="inputYear" type="number" name="inputYear" />
+
+            <apex:input value ="{!year}" title="Input year" id="inputYear"/>
+            <apex:commandButton title="Input year" action="{!getTopRatedSalesRepOfYear}" />
+            <!-- <apex:pageBlockTable value="{!sales}" var="s">
+                <apex:outputField value="{!s.Id}"/>
+            </apex:pageBlockTable> -->
+         
+           </apex:pageBlock>    
        <apex:pageBlock title="Deals" >
         <apex:commandButton value="Show Deals" action="{!getDeals}" reRender="y" />
          <apex:pageBlockTable value="{!dealsList}" var="deal" id="y">
@@ -32,6 +57,24 @@
                 </apex:pageBlock>
             </apex:column>
     </apex:pageBlockTable>
-</apex:pageBlock>   
+    <apex:commandButton value="Show won Deals" action="{!getWonDeals}" reRender="z" />
+    <!-- <apex:pageBlockTable value="{!dealsList}" id="z"> -->
+    
+   
+
+</apex:pageBlock>  
+
+  <apex:pageBlock id="x">
+    <!-- <apex:commandButton value="Show sales" action="{!getWonDealsBySalesRepIds}" reRender="x" /> -->
+   
+        <apex:commandButton value="click" action="{!getWonDealsBySalesRepIds}" reRender="x"/>
+        <apex:param  value="{!salesIds}"/>
+       
+    <!-- </apex:column>
+                    <apex:pageBlockTable  value="{!ids}" var="sales" id="x"> 
+                        <apex:column value="{! Id}"/>
+                
+               </apex:pageBlockTable> -->
+           </apex:pageBlock>
 </apex:form>
 </apex:page>

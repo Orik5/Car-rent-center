@@ -61,18 +61,21 @@ public with sharing class CarRentServices {
     }
   
     public  Car__c updateDeal(Id dealId, Map<SObjectField, Object> fieldName2Value){
-        List<Deal__c> deals = [SELECT Car__c,Car__r.Name,Car__r.IsValidForRent__c,Car__r.Model__c,Car__r.Type__c
-                             FROM Deal__c WHERE ID =: dealId ];
+        List<Deal__c> deals = [
+            SELECT Car__c,Car__r.Name,Car__r.IsValidForRent__c,Car__r.Model__c,Car__r.Type__c
+            FROM Deal__c
+            WHERE ID =: dealId
+        ];
   
         Set<Id> carSetIds = new Set<Id>();
         for(Deal__c carId: deals){
             carSetIds.add(carId.Car__c);
         }
         Car__c car = [
-                   SELECT Id, Name, IsValidForRent__c, Model__c,Type__c
-                   FROM Car__c
-                   WHERE Id
-                   IN:carSetIds 
+            SELECT Id, Name, IsValidForRent__c, Model__c,Type__c
+            FROM Car__c
+            WHERE Id
+            IN:carSetIds 
         ];
 
         Map<SObjectField, Object> OldFieldNameValue = new  Map<SObjectField, Object>();
