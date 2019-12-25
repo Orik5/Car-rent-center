@@ -7,10 +7,12 @@ private class CarRentServiceTest {
     static void setup() {
         Sales_Manager__c sales = new Sales_Manager__c(Name ='TestSales1');
         insert sales;
+
         Car__c car = new Car__c(); 
         car.Name='TestCar1';
         car.IsValidForRent__c= true;
-        insert car;             
+        insert car;    
+
         Deal__c deal1 = new Deal__c();
         deal1.Name = 'TestDeal2';
         deal1.Status__c ='Open';
@@ -40,28 +42,26 @@ private class CarRentServiceTest {
         deal1 = deal;
         deal2 = deal;              
         System.Test.startTest();
-        CarRentServices.checkDealDatetime(deal1,deal2);
+        CarRentServices.checkDealDatetime(deal1,deal2);      
+        System.Test.stopTest();
         System.assertEquals(deal1, deal2);
         System.assertNotEquals(deal1, deal2, 'Dublicates are found!');
-        System.Test.stopTest();
 
       
     } 
     @isTest
-    static void preventDublicateDealsTest(){
+    static void preventDublicateDealsTest() {
         List<Deal__c> deals = [
             SELECT  Name, Car__c, Sales_Manager__c
             FROM Deal__c
         ];
         Deal__c deal1 = deals.get(0);
-        System.debug(deal1);
         Deal__c deal2 = deals.get(1);
-        System.debug(deal2);
         System.Test.startTest();
-        CarRentServices.checkDublicateDeal(deal1,deal2);
+        CarRentServices.checkDublicateDeal(deal1,deal2);        
+        System.Test.stopTest();
         System.assertNotEquals(deal1, deal2, 'Dublicates are found!');
         System.assertEquals(deal1, deal2, 'Dublicates are found!');
-        System.Test.stopTest();
         
     }
 }

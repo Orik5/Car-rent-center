@@ -104,8 +104,8 @@ public with sharing class CarRentServices {
         Car__c car = [
             SELECT Id, IsValidForRent__c,
                 (SELECT Id, Name, Status__c
-                 FROM Deals__r
-                 WHERE Status__c = 'Open')
+                FROM Deals__r
+                WHERE Status__c = 'Open')
             FROM Car__c
             WHERE Id =: carId
         ];
@@ -141,12 +141,12 @@ public with sharing class CarRentServices {
        
     public static void checkDealDatetime(Deal__c deal,Deal__c newDeal) {
         String errorMessage = 'Please choose another datetime for deal, in this period already exist deal.You can\'t create two deals on the same period!';
-        if((newDeal.Status__c=='Won' && deal.Status__c=='Won') || (newDeal.Status__c=='Open' && deal.Status__c=='Won')) {
+        if((newDeal.Status__c == 'Won' && deal.Status__c == 'Won') || (newDeal.Status__c == 'Open' && deal.Status__c == 'Won')) {
             if((newDeal.EndDate__c <= deal.StartDate__c && newDeal.EndDate__c >= deal.EndDate__c) ||
                 (newDeal.StartDate__c <= deal.StartDate__c && newDeal.EndDate__c >= deal.EndDate__c) ||
                 (newDeal.StartDate__c <= deal.StartDate__c && newDeal.StartDate__c >= deal.EndDate__c) ||
                 (newDeal.StartDate__c > deal.EndDate__c && newDeal.EndDate__c < deal.EndDate__c )) {
-                 newDeal.addError(errorMessage);
+                newDeal.addError(errorMessage);
            	}
         }
     }
@@ -158,7 +158,7 @@ public with sharing class CarRentServices {
     //There 2 Deals with same Sales Rep and Car. Update fields  of 1st Deal so it becames a duplicate of 2d Deal. Validate error.
     public static void checkDublicateDeal(Deal__c deal,Deal__c newDeal) {
         String errorMessage = 'Please choose another sales manager or another car .You can\'t create two deals with the same sales manger and  the same car!';
-        if((newDeal.Car__c== deal.Car__c) && (newDeal.Sales_Manager__c  == deal.Sales_Manager__c)) {
+        if((newDeal.Car__c == deal.Car__c) && (newDeal.Sales_Manager__c == deal.Sales_Manager__c)) {
             newDeal.addError(errorMessage);
         }
     }
