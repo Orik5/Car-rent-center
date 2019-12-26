@@ -42,7 +42,7 @@ private class CarRentServiceTest {
         CarRentServices.checkDealDatetime(deal1, deal2);      
         System.Test.stopTest();
         System.assertEquals(deal1, deal2);
-        System.assertNotEquals(deal1, deal2, 'Dublicates are found!');      
+        System.assertNotEquals(deal1, deal2, 'Duplicates are found!');      
     } 
 
     @isTest
@@ -56,7 +56,8 @@ private class CarRentServiceTest {
         System.Test.startTest();
         CarRentServices.checkDublicateDeal(deal1, deal2);        
         System.Test.stopTest();
-        System.assertNotEquals(deal1, deal2, 'Dublicates are found!');
-        System.assertEquals(deal1, deal2, 'Dublicates are found!');       
+        System.assertNotEquals(deal1, deal2, 'Duplicates are found!');
+        System.assertEquals(deal1, deal2, 'Duplicates are found!');       
     }
+    
 }
