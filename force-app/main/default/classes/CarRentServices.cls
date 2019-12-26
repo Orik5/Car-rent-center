@@ -61,39 +61,44 @@ public with sharing class CarRentServices {
     }
      //You have to work with Dynamic query here, you should not hardcode the fields
     public  Database.SaveResult updateDeal(Id dealId, Map<SObjectField, Object> fieldName2Value) {
-        List<Deal__c> deals = [
-            SELECT Car__c, Car__r.Name, Car__r.IsValidForRent__c, Car__r.Model__c, Car__r.Type__c
-            FROM Deal__c
-            WHERE ID =: dealId
-        ];  
-
+        String inputDealIdQuery = 'SELECT Car__c, Car__r.Name, Car__r.IsValidForRent__c, Car__r.Model__c, Car__r.Type__c  FROM Deal__c  WHERE ID =: \'%'
+        + String.escapeSingleQuotes(dealId) + '%\'';
+        List<Deal__c> deals = Database.query(inputDealIdQuery);
         Set<Id> carSetIds = new Set<Id>();
         for(Deal__c carId : deals) {
             carSetIds.add(carId.Car__c);
         }
-
         Car__c car = [
             SELECT Id, Name, IsValidForRent__c, 
-                Model__c, Type__c //4 spaces comparing to line above..not 100500...
+                Model__c, Type__c 
             FROM Car__c
-            WHERE Id IN: carSetIds  // It is better to write this in one line WHERE Id IN :carSetIds
+            WHERE Id IN: carSetIds  
         ];    
 
-        Map<SObjectField, Object> OldFieldNameValue = new Map<SObjectField, Object>();
-        OldFieldNameValue.put(Car__c.Id, car.Id);
-        OldFieldNameValue.put(Car__c.Name, car.Name);
-        OldFieldNameValue.put(Car__c.IsValidForRent__c, car.IsValidForRent__c);
-        OldFieldNameValue.put(Car__c.Model__c, car.Model__c);
-        OldFieldNameValue.put(Car__c.Type__c, car.Type__c);
-        for(SObjectField fieldName : fieldName2Value.keySet()) {
+    Map<String, Object> oldFieldsToValue = car.getPopulatedFieldsAsMap();    
+    for (String fieldName : oldFieldsToValue.keySet()) {
+    System.debug('field name is ' + fieldName + ', value is ' + 
+        oldFieldsToValue.get(fieldName));
+    }
+    System.debug(oldFieldsToValue);
+
+    //Logic for geting sObjectfield  name  and  add to Set 
+    Set<SObjectField> sObjectfields = new Set<SObjectField>();  
+    SObjectType objectName = Schema.getGlobalDescribe().get('Deal__c');
+    Map<String, Schema.SObjectField> fields = objectName.getDescribe().fields.getMap();
+        
+    for(Schema.SObjectField fieldApiName:fields.values()) {
+            sObjectfields.add(fieldApiName);
+    }
+
+    for(SObjectField fieldName : fieldName2Value.keySet()) {
             car.put(fieldName, fieldName2Value.get(fieldName));
-        }
-          
-        Database.SaveResult saveResult = Database.update(car);      
+    }        
+    Database.SaveResult saveResult = Database.update(car);      
         if (saveResult.isSuccess()) {
-            System.debug('Old values is : '+ OldFieldNameValue);
-            System.debug('Successfully updated car. Car ID: ' + saveResult.getId());     
-        } else {                   
+            System.debug('Old values is : '+ oldFieldsToValue);
+            System.debug('Successfully updated car. Car ID: ' + saveResult.getId());
+            } else {                   
             for(Database.Error err : saveResult.getErrors()) {
                 System.debug('The following error has occurred.');                    
                 System.debug(err.getStatusCode() + ': ' + err.getMessage());
