@@ -6,8 +6,6 @@
     <apex:commandButton value="Car Rent Statistic" action="{!getCarRentStatistic}" />
    
 </apex:pageBlock>
-
-
     <apex:pageBlock title="Choose start and end datetime">
     <input id="theStartDatetimeInput" type="datetime" name="theStartDatetimeInput"/>
     <input id="theEndDatetimeInput" type="datetime" name="theEndDatetimeInput"/>

@@ -39,11 +39,11 @@ public with sharing class CarRentServices {
             }
         }
         return salesManager;             
-  }
+    }
 
-    public Deal__c createNewDeal(String name ,DateTime startDate, DateTime endDate, Id salesRepId, Id carId) {
+    public Deal__c createNewDeal(String name, DateTime startDate, DateTime endDate, Id salesRepId, Id carId) {
         Deal__c deal = new Deal__c( Name = name, StartDate__c = startDate,
-        EndDate__c=endDate,Sales_Manager__c = salesRepId, Car__c = carId);
+        EndDate__c=endDate, Sales_Manager__c = salesRepId, Car__c = carId);
         Database.SaveResult sr = Database.insert(deal);
         if (sr.isSuccess()) {
             System.debug('Successfully inserted deal. Deal ID: ' + sr.getId());            
@@ -63,23 +63,25 @@ public with sharing class CarRentServices {
             FROM Deal__c
             WHERE ID =: dealId
         ];  
+
         Set<Id> carSetIds = new Set<Id>();
         for(Deal__c carId : deals) {
             carSetIds.add(carId.Car__c);
         }
+
         Car__c car = [
             SELECT Id, Name, IsValidForRent__c, Model__c, Type__c
             FROM Car__c
             WHERE Id
             IN: carSetIds 
-        ];
-        
-        Map<SObjectField, Object> OldFieldNameValue = new  Map<SObjectField, Object>();
-        OldFieldNameValue.put(Car__c.Id,car.Id);
-        OldFieldNameValue.put(Car__c.Name,car.Name);
-        OldFieldNameValue.put(Car__c.IsValidForRent__c,car.IsValidForRent__c);
-        OldFieldNameValue.put(Car__c.Model__c,car.Model__c);
-        OldFieldNameValue.put(Car__c.Type__c,car.Type__c);
+        ];    
+
+        Map<SObjectField, Object> OldFieldNameValue = new Map<SObjectField, Object>();
+        OldFieldNameValue.put(Car__c.Id, car.Id);
+        OldFieldNameValue.put(Car__c.Name, car.Name);
+        OldFieldNameValue.put(Car__c.IsValidForRent__c, car.IsValidForRent__c);
+        OldFieldNameValue.put(Car__c.Model__c, car.Model__c);
+        OldFieldNameValue.put(Car__c.Type__c, car.Type__c);
         for(SObjectField fieldName : fieldName2Value.keySet()) {
             car.put(fieldName, fieldName2Value.get(fieldName));
             }
@@ -109,6 +111,7 @@ public with sharing class CarRentServices {
             FROM Car__c
             WHERE Id =: carId
         ];
+
         singleCarId = car.Id;
         AggregateResult[] dealsOpenStatusesCountAggr = [
             SELECT count(Id) recordCount
@@ -116,6 +119,7 @@ public with sharing class CarRentServices {
             WHERE Car__c =: singleCarId
             ORDER BY count(Id)
         ];
+
         for(AggregateResult agg : dealsOpenStatusesCountAggr) {
             countDeals = (Integer) (agg.get('recordCount'));
         } 
@@ -124,7 +128,7 @@ public with sharing class CarRentServices {
             deal.Status__c='Lost';
             car.IsValidForRent__c = false;             
         }
-                           
+                          
         Database.SaveResult sr = Database.update(car);
            if (sr.isSuccess()) {
            System.debug('Successfully updated car. Car ID: ' + sr.getId());      
@@ -156,7 +160,7 @@ public with sharing class CarRentServices {
         }
     }
     //There 2 Deals with same Sales Rep and Car. Update fields  of 1st Deal so it becames a duplicate of 2d Deal. Validate error.
-    public static void checkDublicateDeal(Deal__c deal,Deal__c newDeal) {
+    public static void checkDublicateDeal(Deal__c deal, Deal__c newDeal) {
         String errorMessage = 'Please choose another sales manager or another car .You can\'t create two deals with the same sales manger and  the same car!';
         if((newDeal.Car__c == deal.Car__c) && (newDeal.Sales_Manager__c == deal.Sales_Manager__c)) {
             newDeal.addError(errorMessage);

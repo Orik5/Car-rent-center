@@ -21,7 +21,7 @@ public with sharing class CarRentDAO {
             SELECT Sales_Manager__c, COUNT(Id) recordCount
             FROM Deal__c 
             WHERE Sales_Manager__c 
-            IN :ids
+            IN: ids
             AND  Status__c = 'Won'
             GROUP BY Sales_Manager__c
             LIMIT 100
@@ -68,7 +68,6 @@ public with sharing class CarRentDAO {
             ORDER BY count(Id)
             DESC LIMIT 1
         ];
-        return new Sales_Manager__c(Id = (Id) carWonStatusesCountAggr.get(0).get('Sales_Manager__c'));
-       
+        return new Sales_Manager__c(Id = (Id) carWonStatusesCountAggr.get(0).get('Sales_Manager__c'));       
     }
 }
