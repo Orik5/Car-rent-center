@@ -33,9 +33,10 @@ public with sharing class CarRentDAO {
       }      
   
     public List<Car__c> getCarsAvailableForRent(Datetime rentStart, Datetime rentEnd) {
+        List<Car__c> cars = new List<Car__c>();
         List<Deal__c> deals = [
             SELECT Id, Name, Car__c, StartDate__c,
-                EndDate__c, Status__c
+                Car__r.Id, Car__r.Name, EndDate__c, Status__c
             FROM Deal__c 
             WHERE Status__c = 'Open' 
             AND StartDate__c >= :rentStart 
@@ -43,17 +44,13 @@ public with sharing class CarRentDAO {
             AND(EndDate__c >= :rentStart
                 OR EndDate__c <= :rentEnd)
         ];
-        System.debug(deals);
-        Set<Id> carIds = new Set<Id>();
-        for(Deal__c deal: deals){
-            carIds.add(deal.Car__c);
+       
+        for(Deal__c deal :deals){
+            Car__c  car = new Car__c();
+            car.Id = deal.Car__r.Id;
+            car.Name = deal.Car__r.Name;
+            cars.add(car);
         }
-        List<Car__c> cars = [
-            SELECT Id, Name
-            FROM Car__c
-            WHERE Id IN :carIds
-        ];             
-        System.debug(cars);
         return cars;      
     }
     
@@ -71,7 +68,7 @@ public with sharing class CarRentDAO {
         }        
         return carWonStatusesCount;        
     }
-    //Check if not null on return st
+    
     public Sales_Manager__c getTopRatedSalesRepOfYear(Integer year) {
         AggregateResult[] carWonStatusesCountAggr = [
             SELECT Sales_Manager__c, count(Id) recordCount
@@ -81,7 +78,9 @@ public with sharing class CarRentDAO {
             GROUP BY Sales_Manager__c, CALENDAR_YEAR(EndDate__c)
             ORDER BY count(Id)
             DESC LIMIT 1
-        ];//Check if not null on return st
-        return new Sales_Manager__c(Id = (Id) carWonStatusesCountAggr.get(0).get('Sales_Manager__c'));       
+        ];
+        return carWonStatusesCountAggr.size()>0 ? 
+            new Sales_Manager__c(Id = (Id) carWonStatusesCountAggr.get(0).get('Sales_Manager__c')):
+            null;       
     }
 }
