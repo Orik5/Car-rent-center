@@ -9,24 +9,18 @@ public with sharing class CarRentServices {
         Date outputDate = Date.valueOf(stringDate);
         return outputDate;
     }
-
-    public static void setEndDate(List<Deal__c> endDateDeals) {
-        for(Deal__c deal :endDateDeals) {
-            deal.EndDate__c = Datetime.now();
-        }
-    }
     
-    public List<Deal__c> filterFinished(List<Deal__c> deals) {
-        List<Deal__c> deals1 = [
-            SELECT id, Name, Status__c
-            FROM Deal__c
-        ];
-        for (Deal__c deal : deals1){
+    public Deal__c setEndDate(Deal__c deal) {
+        deal.EndDate__c = Datetime.now();
+        return deal;
+    }
+
+    public Deal__c filterFinished(Deal__c deal) {
+        CarRentServices carRentServices = new CarRentServices();       
             if(deal.Status__c != 'Open') {
-                setEndDate(deals);
-            }
-        }
-        return deals;
+                carRentServices.setEndDate(deal);           
+            }             
+        return deal;
     }
  
     public Database.SaveResult createSalesManager(String name, Date birthday) {
@@ -59,8 +53,10 @@ public with sharing class CarRentServices {
         }
         return saveResult;
     }
-     
-    public  Database.SaveResult updateDeal(Id dealId, Map<SObjectField, Object> fieldName2Value) {
+     //It is not a dynamical query  / Redo / You need to do query  get fields names  from input map and add them to list 
+    public Database.SaveResult updateDeal(Id dealId, Map<SObjectField, Object> fieldName2Value) {
+
+        //Redo query 
         String inputDealIdQuery = 'SELECT Car__c, Car__r.Name, Car__r.IsValidForRent__c, Car__r.Model__c, Car__r.Type__c  FROM Deal__c  WHERE ID =: dealId';
         List<Deal__c> deals = Database.query(inputDealIdQuery);
         Set<Id> carSetIds = new Set<Id>();
@@ -71,7 +67,7 @@ public with sharing class CarRentServices {
             SELECT Id, Name, IsValidForRent__c, 
                 Model__c, Type__c 
             FROM Car__c
-            WHERE Id IN: carSetIds  
+            WHERE Id IN :carSetIds  
         ];    
 
     Map<String, Object> oldFieldsToValue = car.getPopulatedFieldsAsMap();    
@@ -91,7 +87,7 @@ public with sharing class CarRentServices {
     for(SObjectField fieldName : fieldName2Value.keySet()) {
             car.put(fieldName, fieldName2Value.get(fieldName));
     }        
-    Database.SaveResult saveResult = Database.update(car);      
+    Database.SaveResult saveResult = Database.update(car);       
         if (saveResult.isSuccess()) {
             System.debug('Old values is : '+ oldFieldsToValue);
             System.debug('Successfully updated car. Car ID: ' + saveResult.getId());
@@ -112,7 +108,7 @@ public with sharing class CarRentServices {
                 Car__r.IsValidForRent__c
             FROM Deal__c
             WHERE Status__c = 'Open' 
-            AND Car__c =: carId
+            AND Car__c =:carId
         ];
       
         for(Deal__c deal : deals) { 

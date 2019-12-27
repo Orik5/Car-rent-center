@@ -15,7 +15,7 @@ public with sharing class CarRentDAO {
         return deals;
     }
     
-    public Map<Id, Integer> getWonDealsBySalesRepIds(Set<ID>ids) {
+    public Map<Id, Integer> getWonDealsBySalesRepIds(Set<ID> ids) {
         Map<Id, Integer> salesRepDealStatusesCount = new Map<Id, Integer>();
         AggregateResult[] aggSalesRepDealStatusesCount = [
             SELECT Sales_Manager__c, COUNT(Id) recordCount
@@ -31,7 +31,7 @@ public with sharing class CarRentDAO {
         } 
         return salesRepDealStatusesCount;
       }      
-   
+   //Return cars
     public List<Deal__c> getCarsAvailableForRent(Datetime rentStart, Datetime rentEnd) {
         List<Deal__c> cars = [
             SELECT Id, StartDate__c, EndDate__c, Status__c, Car__c, Car__r.Id, Car__r.Name
@@ -57,7 +57,7 @@ public with sharing class CarRentDAO {
         }        
         return carWonStatusesCount;        
     }
-    
+    //Check if not null on return st
     public Sales_Manager__c getTopRatedSalesRepOfYear(Integer year) {
         AggregateResult[] carWonStatusesCountAggr = [
             SELECT Sales_Manager__c, count(Id) recordCount
