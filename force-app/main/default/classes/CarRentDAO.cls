@@ -7,8 +7,8 @@ public with sharing class CarRentDAO {
         List<Deal__c> deals = [
             SELECT Name, StartDate__c, EndDate__c 
             FROM Deal__c 
-            WHERE StartDate__c = : startDate
-            AND EndDate__c = : endDate
+            WHERE StartDate__c = :startDate
+            AND EndDate__c = :endDate
             AND Status__c = 'Won'
             LIMIT 100
         ];
@@ -31,16 +31,30 @@ public with sharing class CarRentDAO {
         } 
         return salesRepDealStatusesCount;
       }      
-   //Return cars
-    public List<Deal__c> getCarsAvailableForRent(Datetime rentStart, Datetime rentEnd) {
-        List<Deal__c> cars = [
-            SELECT Id, StartDate__c, EndDate__c, Status__c, Car__c, Car__r.Id, Car__r.Name
-            FROM Deal__c
-            WHERE StartDate__c = : rentStart
-            AND EndDate__c = : rentEnd
-            AND Status__c = 'Open'           
+  
+    public List<Car__c> getCarsAvailableForRent(Datetime rentStart, Datetime rentEnd) {
+        List<Deal__c> deals = [
+            SELECT Id, Name, Car__c, StartDate__c,
+                EndDate__c, Status__c
+            FROM Deal__c 
+            WHERE Status__c = 'Open' 
+            AND StartDate__c >= :rentStart 
+            AND StartDate__c <= :rentEnd
+            AND(EndDate__c >= :rentStart
+                OR EndDate__c <= :rentEnd)
         ];
-       return cars;      
+        System.debug(deals);
+        Set<Id> carIds = new Set<Id>();
+        for(Deal__c deal: deals){
+            carIds.add(deal.Car__c);
+        }
+        List<Car__c> cars = [
+            SELECT Id, Name
+            FROM Car__c
+            WHERE Id IN :carIds
+        ];             
+        System.debug(cars);
+        return cars;      
     }
     
     public Map<Id, Integer> getCarRentStatistic() {
@@ -62,12 +76,12 @@ public with sharing class CarRentDAO {
         AggregateResult[] carWonStatusesCountAggr = [
             SELECT Sales_Manager__c, count(Id) recordCount
             FROM Deal__c 
-            WHERE CALENDAR_YEAR(EndDate__c) =: year
+            WHERE CALENDAR_YEAR(EndDate__c) = :year
             AND Status__c = 'Won' 
             GROUP BY Sales_Manager__c, CALENDAR_YEAR(EndDate__c)
             ORDER BY count(Id)
             DESC LIMIT 1
-        ];
+        ];//Check if not null on return st
         return new Sales_Manager__c(Id = (Id) carWonStatusesCountAggr.get(0).get('Sales_Manager__c'));       
     }
 }
