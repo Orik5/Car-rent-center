@@ -59,10 +59,9 @@ public with sharing class CarRentServices {
         }
         return saveResult;
     }
-     //You have to work with Dynamic query here, you should not hardcode the fields
+     
     public  Database.SaveResult updateDeal(Id dealId, Map<SObjectField, Object> fieldName2Value) {
-        String inputDealIdQuery = 'SELECT Car__c, Car__r.Name, Car__r.IsValidForRent__c, Car__r.Model__c, Car__r.Type__c  FROM Deal__c  WHERE ID =: \'%'
-        + String.escapeSingleQuotes(dealId) + '%\'';
+        String inputDealIdQuery = 'SELECT Car__c, Car__r.Name, Car__r.IsValidForRent__c, Car__r.Model__c, Car__r.Type__c  FROM Deal__c  WHERE ID =: dealId';
         List<Deal__c> deals = Database.query(inputDealIdQuery);
         Set<Id> carSetIds = new Set<Id>();
         for(Deal__c carId : deals) {
@@ -81,16 +80,14 @@ public with sharing class CarRentServices {
         oldFieldsToValue.get(fieldName));
     }
     System.debug(oldFieldsToValue);
-
-    //Logic for geting sObjectfield  name  and  add to Set 
-    Set<SObjectField> sObjectfields = new Set<SObjectField>();  
-    SObjectType objectName = Schema.getGlobalDescribe().get('Deal__c');
-    Map<String, Schema.SObjectField> fields = objectName.getDescribe().fields.getMap();
+    // //Logic for geting sObjectfield  name  and  add to Set 
+    // Set<SObjectField> sObjectfields = new Set<SObjectField>();  
+    // SObjectType objectName = Schema.getGlobalDescribe().get('Deal__c');
+    // Map<String, Schema.SObjectField> fields = objectName.getDescribe().fields.getMap();
         
-    for(Schema.SObjectField fieldApiName:fields.values()) {
-            sObjectfields.add(fieldApiName);
-    }
-
+    // for(Schema.SObjectField fieldApiName:fields.values()) {
+    //         sObjectfields.add(fieldApiName);
+    // }
     for(SObjectField fieldName : fieldName2Value.keySet()) {
             car.put(fieldName, fieldName2Value.get(fieldName));
     }        
