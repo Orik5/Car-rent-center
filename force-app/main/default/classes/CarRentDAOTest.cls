@@ -28,9 +28,9 @@ private class CarRentDAOTest {
         CarRentDAO carRentDAO = new CarRentDAO();
         DateTime startDate = datetime.newInstance(2019, 11, 21, 12, 30, 0);
         DateTime endDate = datetime.newInstance(2019, 12, 25, 12, 30, 0);
-        System.Test.startTest();
+        Test.startTest();
         carRentDAO.getWonDeals(startDate,endDate);
-        System.Test.stopTest();
+        Test.stopTest();
 
     }
 
@@ -44,9 +44,9 @@ private class CarRentDAOTest {
             LIMIT 1
         ];
         ids.add(deal1.Sales_Manager__c);
-        System.Test.startTest();
+        Test.startTest();
         carRentDAO.getWonDealsBySalesRepIds(ids); 
-        System.Test.stopTest();
+        Test.stopTest();
         System.assertEquals('Won', deal1.Status__c);
     }
     
@@ -64,27 +64,27 @@ private class CarRentDAOTest {
                 AND Status__c = 'Open')
             FROM Car__c
         ];
-        System.Test.startTest();        
+        Test.startTest();        
         carRentDAO.getCarsAvailableForRent(startDate, endDate);
-        System.Test.stopTest();
+        Test.stopTest();
      //   System.assertEquals(cars, carRentDAO.getCarsAvailableForRent(startDate, endDate));
     }
 
     @isTest
     static void getCarRentStatisticTest() {
         CarRentDAO carRentDAO = new CarRentDAO();
-        System.Test.startTest();
+        Test.startTest();
         carRentDAO.getCarRentStatistic();
-        System.Test.stopTest();
+        Test.stopTest();
     }
 
     @isTest
     static void getTopRatedSalesRepOfYearTest() {
        CarRentDAO carRentDAO = new CarRentDAO();
        Integer year = 2019;
-       System.Test.startTest();
+       Test.startTest();
        carRentDAO.getTopRatedSalesRepOfYear(year);
-       System.Test.stopTest();
+       Test.stopTest();
     }
 
 }

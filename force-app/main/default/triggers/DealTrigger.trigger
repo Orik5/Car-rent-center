@@ -5,10 +5,10 @@ trigger DealTrigger on Deal__c (before insert,before update) {
 				CarRentServices carRentServices = new CarRentServices();
 				carRentServices.filterFinished(deal);
             }
-    	    List<Deal__c> deals = new List<Deal__c>([
-				SELECT StartDate__c, EndDate__c, Status__c
-   				FROM Deal__c
-			]);
+    	    // List<Deal__c> deals = new List<Deal__c>([
+			// 	SELECT StartDate__c, EndDate__c, Status__c
+   			// 	FROM Deal__c
+			// ]);
 
     		for(Deal__c deal : deals) {
 	  			for(Deal__c newDeal: Trigger.new) {

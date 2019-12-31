@@ -53,50 +53,30 @@ public with sharing class CarRentServices {
         }
         return saveResult;
     }
-     //It is not a dynamical query  / Redo / You need to do query  get fields names  from input map and add them to list 
+    
     public Database.SaveResult updateDeal(Id dealId, Map<SObjectField, Object> fieldName2Value) {
-
-        //Redo query 
-        String inputDealIdQuery = 'SELECT Car__c, Car__r.Name, Car__r.IsValidForRent__c, Car__r.Model__c, Car__r.Type__c  FROM Deal__c  WHERE ID =: dealId';
-        List<Deal__c> deals = Database.query(inputDealIdQuery);
-        Set<Id> carSetIds = new Set<Id>();
-        for(Deal__c carId : deals) {
-            carSetIds.add(carId.Car__c);
+        List<String> sObjectFields = new List<String>();
+        for(SObjectField fieldName : fieldName2Value.keySet()) {
+            sObjectFields.add(''+fieldName);
+        }        
+        DescribeSObjectResult describeResult = Car__c.getSObjectType().getDescribe();
+        String dealQuery = ' SELECT ' +  String.join(sObjectFields, ',' ) +  ' FROM ' + describeResult.getName() + ' WHERE ' + 'Id IN: carIds'+ ' LIMIT 1';
+        List<Deal__c> records = Database.query( dealQuery );
+        Deal__c deal = records.get(0);                  
+        for(SObjectField fieldName : fieldName2Value.keySet()) {
+            deal.put(fieldName, fieldName2Value.get(fieldName));
         }
-        Car__c car = [
-            SELECT Id, Name, IsValidForRent__c, 
-                Model__c, Type__c 
-            FROM Car__c
-            WHERE Id IN :carSetIds  
-        ];    
-
-    Map<String, Object> oldFieldsToValue = car.getPopulatedFieldsAsMap();    
-    for (String fieldName : oldFieldsToValue.keySet()) {
-    System.debug('field name is ' + fieldName + ', value is ' + 
-        oldFieldsToValue.get(fieldName));
-    }
-    System.debug(oldFieldsToValue);
-    // //Logic for geting sObjectfield  name  and  add to Set 
-    // Set<SObjectField> sObjectfields = new Set<SObjectField>();  
-    // SObjectType objectName = Schema.getGlobalDescribe().get('Deal__c');
-    // Map<String, Schema.SObjectField> fields = objectName.getDescribe().fields.getMap();
-        
-    // for(Schema.SObjectField fieldApiName:fields.values()) {
-    //         sObjectfields.add(fieldApiName);
-    // }
-    for(SObjectField fieldName : fieldName2Value.keySet()) {
-            car.put(fieldName, fieldName2Value.get(fieldName));
-    }        
-    Database.SaveResult saveResult = Database.update(car);       
-        if (saveResult.isSuccess()) {
-            System.debug('Old values is : '+ oldFieldsToValue);
-            System.debug('Successfully updated car. Car ID: ' + saveResult.getId());
-            } else {                   
-            for(Database.Error err : saveResult.getErrors()) {
-                System.debug('The following error has occurred.');                    
-                System.debug(err.getStatusCode() + ': ' + err.getMessage());
-                System.debug('Car fields that affected this error: ' + err.getFields());
-              }
+        Database.SaveResult saveResult = Database.update(deal);       
+            if (saveResult.isSuccess()) {
+                System.debug(records);
+                System.debug('Old values is : '+ records);
+                System.debug('Successfully updated deal. Deal ID: ' + saveResult.getId());
+                } else {                    
+                for(Database.Error err : saveResult.getErrors()) {
+                    System.debug('The following error has occurred.');                    
+                    System.debug(err.getStatusCode() + ': ' + err.getMessage());
+                    System.debug('Deal fields that affected this error: ' + err.getFields());
+                }
             }
         return saveResult;
     }
@@ -134,6 +114,11 @@ public with sharing class CarRentServices {
     } 
        
     public static void checkDealDatetime(Deal__c deal, Deal__c newDeal) {
+         List<Deal__c> deals = new List<Deal__c>([
+				SELECT StartDate__c, EndDate__c, Status__c
+   				FROM Deal__c
+			]);
+            
         String errorMessage = 'Please choose another datetime for deal, in this period already exist deal.You can\'t create two deals on the same period!';
         if((newDeal.Status__c == 'Won' && deal.Status__c == 'Won') || (newDeal.Status__c == 'Open' && deal.Status__c == 'Won')) {
             if((newDeal.EndDate__c <= deal.StartDate__c && newDeal.EndDate__c >= deal.EndDate__c) ||
@@ -150,7 +135,7 @@ public with sharing class CarRentServices {
         }
     }
     //There 2 Deals with same Sales Rep and Car. Update fields  of 1st Deal so it becames a duplicate of 2d Deal. Validate error.
-   // this is not how you search for duplicate
+   // this is not how you s earch for duplicate
     public static void checkDublicateDeal(Deal__c deal, Deal__c newDeal) {
         String errorMessage = 'Please choose another sales manager or another car .You can\'t create two deals with the same sales manger and  the same car!';
         if((newDeal.Car__c == deal.Car__c) && (newDeal.Sales_Manager__c == deal.Sales_Manager__c)) {
