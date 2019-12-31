@@ -15,7 +15,7 @@ public with sharing class CarRentServices {
         return deal;
     }
 
-    public Deal__c filterFinished(Deal__c deal) {
+    public Deal__c filterFinished(Deal__c deal) {       
         CarRentServices carRentServices = new CarRentServices();       
             if(deal.Status__c != 'Open') {
                 carRentServices.setEndDate(deal);           
@@ -113,20 +113,20 @@ public with sharing class CarRentServices {
         return saveResultList;
     } 
        
-    public static void checkDealDatetime(Deal__c deal, Deal__c newDeal) {
-         List<Deal__c> deals = new List<Deal__c>([
+    public static void checkDealDatetime( Deal__c newDeal) {
+        List<Deal__c> deals = [
 				SELECT StartDate__c, EndDate__c, Status__c
    				FROM Deal__c
-			]);
-            
-        String errorMessage = 'Please choose another datetime for deal, in this period already exist deal.You can\'t create two deals on the same period!';
-        if((newDeal.Status__c == 'Won' && deal.Status__c == 'Won') || (newDeal.Status__c == 'Open' && deal.Status__c == 'Won')) {
+			];
+           
+        for(Deal__c deal : deals) {
+            String errorMessage = 'Please choose another datetime for deal, in this period already exist deal.You can\'t create two deals on the same period!';
             if((newDeal.EndDate__c <= deal.StartDate__c && newDeal.EndDate__c >= deal.EndDate__c) ||
                 (newDeal.StartDate__c <= deal.StartDate__c && newDeal.EndDate__c >= deal.EndDate__c) ||
                 (newDeal.StartDate__c <= deal.StartDate__c && newDeal.StartDate__c >= deal.EndDate__c) ||
                 (newDeal.StartDate__c > deal.EndDate__c && newDeal.EndDate__c < deal.EndDate__c )) {
-                newDeal.addError(errorMessage);
-           	}
+                newDeal.addError(errorMessage);                  
+            }         
         }
     }
     public static void changeDatetimeToNow(Deal__c deal) {
@@ -134,12 +134,18 @@ public with sharing class CarRentServices {
             deal.EndDate__c = Datetime.now();
         }
     }
-    //There 2 Deals with same Sales Rep and Car. Update fields  of 1st Deal so it becames a duplicate of 2d Deal. Validate error.
-   // this is not how you s earch for duplicate
-    public static void checkDublicateDeal(Deal__c deal, Deal__c newDeal) {
+
+    public static void checkDublicateDeal(Deal__c newDeal) {            
+        List<Deal__c> deals = [
+				SELECT Car__c, Sales_Manager__c
+   				FROM Deal__c
+			];      
+
         String errorMessage = 'Please choose another sales manager or another car .You can\'t create two deals with the same sales manger and  the same car!';
-        if((newDeal.Car__c == deal.Car__c) && (newDeal.Sales_Manager__c == deal.Sales_Manager__c)) {
-            newDeal.addError(errorMessage);
-        }
+        for(Deal__c deal : deals) {            
+            if((newDeal.Car__c == deal.Car__c) && (newDeal.Sales_Manager__c == deal.Sales_Manager__c)) {
+                newDeal.addError(errorMessage);                             
+            } 
+        }       
     }
 }
