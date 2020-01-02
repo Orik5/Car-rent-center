@@ -1,10 +1,7 @@
 <aura:component controller = 'AvailableCarsController' implements="flexipage:availableForAllPageTypes" >
     <aura:attribute type = 'Car__c[]' name = 'cars' default = '[]'/>
     <aura:attribute name = 'columns' type = 'List' default = '[]'/>
-    <!-- <aura:attribute name = 'checked' type = 'Boolean' default = 'true'/> -->
     
-    <!-- <lightning:input type="checkbox" name = 'checked' checked="{!v.cars}"/>  -->
-
     <aura:handler name = 'init' value = '{! this }' action = '{! c.myAction }' />
     <div style = "height: 300px">
     <lightning:datatable data = '{! v.cars }'                        
