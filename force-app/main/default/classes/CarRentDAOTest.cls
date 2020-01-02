@@ -53,7 +53,7 @@ private class CarRentDAOTest {
     @isTest 
     static void getCarsAvailableForRentTest() {
         CarRentDAO carRentDAO = new CarRentDAO();
-        DateTime startDate = datetime.newInstance(2019, 11, 21, 12, 30, 0);
+        DateTime startDate = datetime.newInstance(2019, 12, 21, 12, 30, 0);
         DateTime endDate = datetime.newInstance(2019, 12, 25, 12, 30, 0);
         List<Car__c> cars = [
             SELECT Id, Name,
