@@ -2,7 +2,7 @@ trigger DealTrigger on Deal__c (before insert, before update) {
     if(trigger.isBefore) {
         if(trigger.isUpdate) {			
 			CarRentServices carRentServices = new CarRentServices();
-			carRentServices.filterFinished(Trigger.new[0]);             			
+			carRentServices.filterFinished(Trigger.new);             			
     	}
 		
 		if(trigger.isInsert) {

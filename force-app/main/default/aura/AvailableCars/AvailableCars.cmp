@@ -1,0 +1,10 @@
+<aura:component controller = 'AvailableCarsController' >
+    <aura:attribute type = 'Cars__c[]' name = 'cars' />
+    <aura:attribute name = 'mycolumns' type ='List' />
+
+    <aura:handler name 'init' value = '{! this }' action = '{!c.getAvailableCars}' />
+    <lightining:datatable data = '{! v.cars }'
+                          columns = '{! v.mycolumns }'
+                          keyField = 'id' />    
+
+</aura:component>	

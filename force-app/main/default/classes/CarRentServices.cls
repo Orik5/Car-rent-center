@@ -15,12 +15,14 @@ public with sharing class CarRentServices {
         return deal;
     }
 
-    public Deal__c filterFinished(Deal__c deal) {       
+    public List <Deal__c> filterFinished(List<Deal__C> inputDeals) {         
+        for(Deal__c deal:inputDeals){
         CarRentServices carRentServices = new CarRentServices();       
             if(deal.Status__c != 'Open') {
                 carRentServices.setEndDate(deal);           
-            }             
-        return deal;
+            } 
+        }            
+        return inputDeals;
     }
  
     public Database.SaveResult createSalesManager(String name, Date birthday) {
