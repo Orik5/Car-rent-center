@@ -35,8 +35,7 @@ private class SalesManagerControllerTest {
             SELECT  Name, Status__c             
             FROM Deal__c
             WHERE Status__c = 'Open'
-        ];
-       // pageRef.getParameters().put(deals);
+        ];     
         SalesManagerController salesManagerController = new SalesManagerController();         
         salesManagerController.getDeals();
         Test.stopTest();
