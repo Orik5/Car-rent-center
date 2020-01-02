@@ -120,7 +120,7 @@ public with sharing class CarRentServices {
 				SELECT StartDate__c, EndDate__c, Status__c
    				FROM Deal__c
 			];
-        for(Deal__c newDeal: inputDeals){
+        for(Deal__c newDeal : inputDeals){
             for(Deal__c deal : deals) {
                 String errorMessage = 'Please choose another datetime for deal, in this period already exist deal.You can\'t create two deals on the same period!';
                 if((newDeal.EndDate__c <= deal.StartDate__c && newDeal.EndDate__c >= deal.EndDate__c) ||
@@ -143,7 +143,7 @@ public with sharing class CarRentServices {
 				SELECT Car__c, Sales_Manager__c
    				FROM Deal__c
 			];      
-        for(Deal__c newDeal:inputDeals) {    
+        for(Deal__c newDeal : inputDeals) {    
             String errorMessage = 'Please choose another sales manager or another car .You can\'t create two deals with the same sales manger and  the same car!';
             for(Deal__c deal : deals) {            
                 if((newDeal.Car__c == deal.Car__c) && (newDeal.Sales_Manager__c == deal.Sales_Manager__c)) {
