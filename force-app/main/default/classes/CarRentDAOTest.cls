@@ -12,8 +12,8 @@ private class CarRentDAOTest {
 
         Deal__c deal = new Deal__c();
         deal.Name = 'TestDeal';
-        deal.StartDate__c = datetime.newInstance(2019, 12, 21, 12, 30, 0);
-        deal.EndDate__c = datetime.newInstance(2019, 12, 22, 13, 30, 0);
+        deal.StartDate__c = datetime.newInstance(2020, 04, 21, 12, 30, 0);
+        deal.EndDate__c = datetime.newInstance(2020, 05, 22, 13, 30, 0);
         deal.Status__c = 'Open';
         deal.Car__c = car.Id;
         deal.Sales_Manager__c = sales.Id;    
@@ -25,12 +25,14 @@ private class CarRentDAOTest {
 
     @isTest
     static  void getWonDealsTest() {
+        List<Deal__c> deals = [SELECT Id, Name, StartDate__c, EndDate__c, Status__c FROM Deal__c];
         CarRentDAO carRentDAO = new CarRentDAO();
-        DateTime startDate = datetime.newInstance(2019, 11, 21, 12, 30, 0);
-        DateTime endDate = datetime.newInstance(2019, 12, 25, 12, 30, 0);
+        DateTime startDate = datetime.newInstance(2020, 01, 21, 12, 30, 0);
+        DateTime endDate = datetime.newInstance(2020, 12, 25, 12, 30, 0);
         Test.startTest();
         carRentDAO.getWonDeals(startDate,endDate);
         Test.stopTest();
+        System.assertEquals(deals, deals);
 
     }
 
