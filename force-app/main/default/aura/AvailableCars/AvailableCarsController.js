@@ -1,6 +1,6 @@
 ({
     myAction : function(component, event, helper) {
-        helper.getAvailableCars(component, event, helper);
+          helper.helperMethod(component, event, helper);
 
     }
 })

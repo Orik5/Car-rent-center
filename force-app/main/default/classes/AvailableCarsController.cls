@@ -1,5 +1,5 @@
 public with sharing class AvailableCarsController {
-       
+           
     @AuraEnabled
     public static List<Car__c> getAvailableCars() {
         List<Car__c> cars = [
