@@ -1,5 +1,5 @@
 ({
-    myAction : function(component, event, helper) {
-          helper.helperMethod(component, event, helper);
+    onInit : function(component, event, helper) {
+          helper.getCars(component, event, helper);
     }    
 })

@@ -2,7 +2,7 @@
     <aura:attribute type = 'Car__c[]' name = 'cars' default = '[]'/>
     <aura:attribute name = 'columns' type = 'List' default = '[]'/>
     
-    <aura:handler name = 'init' value = '{! this }' action = '{! c.myAction }' />
+    <aura:handler name = 'init' value = '{! this }' action = '{! c.onInit }' />
     <div style = "height: 300px">
     <lightning:datatable data = '{! v.cars }'                        
                          columns = '{! v.columns }'
